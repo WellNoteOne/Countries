@@ -6,8 +6,10 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [search, setSearch] = useState("");
   const [showFiltered, setShowFiltered] = useState(false);
+  const [weather, setWeather] = useState(0);
 
   const baseUrl = "https://studies.cs.helsinki.fi/restcountries/api/all";
+  const weatherURL = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/`;
 
   useEffect(() => {
     axios.get(baseUrl).then((response) => {
@@ -35,6 +37,25 @@ function App() {
         {country.name.common} - {country.name.official}
       </li>
     ));
+  };
+
+  const getWeather = (capital) => {
+    const location = capital;
+    axios
+      .get(`${weatherURL}${location}?key=DZQXB94CFC778J53EVZUFZ2DW`)
+      .then((response) => {
+        console.log("Weather data:", response.data);
+        setWeather(response.data.currentConditions.temp);
+        console.log("temp: ", weather);
+      });
+    const changeToCls = (weather) => {
+      let x = ((weather - 32) * 5) / 9;
+
+      return x;
+    };
+    console.log(`${weatherURL}${location}?key=DZQXB94CFC778J53EVZUFZ2DW`);
+    console.log("Weather in C", changeToCls(weather));
+    return changeToCls(weather).toFixed(1) + " °C";
   };
 
   const CountryMaps = ({ country }) => {
@@ -86,15 +107,17 @@ function App() {
             <strong>Flag of country:</strong>
             <br />
             <img
+              className="flagCountry"
               src={countries[0].flags.svg}
               alt={`Flag of ${countries[0].name.common}`}
               width="300"
             />
           </p>{" "}
-          <p>Weather : {countries[0]}</p>
           <p>
-            Language(s): {Object.values(countries[0].languages).join(", ")}
-          </p>{" "}
+            Weather in {countries[0].capital}:{" "}
+            {getWeather(countries[0].capital)}
+          </p>
+          <p>Language(s): {Object.values(countries[0].languages).join(", ")}</p>{" "}
           <h3>Mini Map (OpenStreetMap)</h3>
           <CountryMaps country={countries[0]} />
         </div>
