@@ -28,6 +28,16 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  position: relative;
+}
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* top:0; left:0; bottom:0; right:0 */
+  background: url("./assets/Image.png") center center / contain no-repeat fixed;
+  opacity: 0.05; /* полупрозрачность */
+  z-index: -1; /* чтобы фон был позади контента */
+  background-color: #f1f1f1;
 }
 
 h1 {
